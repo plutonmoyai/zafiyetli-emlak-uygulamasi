@@ -28,35 +28,34 @@ $features = isset($row['features']) ? json_decode($row['features'], true) : [];
 <head>
     <meta charset="UTF-8">
     <title>İlan Detayları</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrap.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center"><?php echo htmlspecialchars($row['title']); ?></h2>
-        <div class="card mb-4">
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <h2 class="text-2xl font-bold text-center"><?php echo htmlspecialchars($row['title']); ?></h2>
+        <div class="bg-white p-6 rounded-lg shadow-md mb-4">
             <?php if (!empty($row['image_path'])): ?>
-                <img src="<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="Ürün Resmi">
+                <img src="<?php echo htmlspecialchars($row['image_path']); ?>" class="w-full h-64 object-cover rounded-md mb-4" alt="Ürün Resmi">
             <?php endif; ?>
-            <div class="card-body">
-                <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
-                <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
-                <p class="card-text"><strong>Fiyat:</strong> <?php echo htmlspecialchars($row['price']); ?> TL</p>
-                <p class="card-text"><strong>Alan:</strong> <?php echo htmlspecialchars($row['area']); ?> m²</p>
+            <div class="text-gray-700">
+                <h5 class="text-xl font-semibold"><?php echo htmlspecialchars($row['title']); ?></h5>
+                <p><?php echo htmlspecialchars($row['description']); ?></p>
+                <p><strong>Fiyat:</strong> <?php echo htmlspecialchars($row['price']); ?> TL</p>
+                <p><strong>Alan:</strong> <?php echo htmlspecialchars($row['area']); ?> m²</p>
                 <?php if ($row['type'] == 'konut'): ?>
-                    <p class="card-text"><strong>Oda Sayısı:</strong> <?php echo htmlspecialchars($row['rooms']); ?></p>
-                    <p class="card-text"><strong>Kat Sayısı:</strong> <?php echo htmlspecialchars($row['floors']); ?></p>
-                    <p class="card-text"><strong>Bina Yaşı:</strong> <?php echo htmlspecialchars($row['building_age']); ?></p>
+                    <p><strong>Oda Sayısı:</strong> <?php echo htmlspecialchars($row['rooms']); ?></p>
+                    <p><strong>Kat Sayısı:</strong> <?php echo htmlspecialchars($row['floors']); ?></p>
+                    <p><strong>Bina Yaşı:</strong> <?php echo htmlspecialchars($row['building_age']); ?></p>
                 <?php elseif ($row['type'] == 'arsa'): ?>
-                    <p class="card-text"><strong>İmar Durumu:</strong> <?php echo htmlspecialchars($row['zoning_status']); ?></p>
-                    <p class="card-text"><strong>Arsa Tipi:</strong> <?php echo htmlspecialchars($row['land_type']); ?></p>
+                    <p><strong>İmar Durumu:</strong> <?php echo htmlspecialchars($row['zoning_status']); ?></p>
+                    <p><strong>Arsa Tipi:</strong> <?php echo htmlspecialchars($row['land_type']); ?></p>
                 <?php endif; ?>
-                <p class="card-text"><strong>Adres:</strong> <?php echo htmlspecialchars($row['address'] . ", " . $row['district'] . ", " . $row['city']); ?></p>
+                <p><strong>Adres:</strong> <?php echo htmlspecialchars($row['address'] . ", " . $row['district'] . ", " . $row['city']); ?></p>
                 
                 <!-- Özellikler -->
-                <h4>Özellikler</h4>
+                <h4 class="text-lg font-semibold mt-4">Özellikler</h4>
                 <?php if ($features): ?>
-                    <ul>
+                    <ul class="list-disc list-inside">
                         <?php foreach ($features as $feature): ?>
                             <li><?php echo htmlspecialchars($feature); ?></li>
                         <?php endforeach; ?>
@@ -66,10 +65,7 @@ $features = isset($row['features']) ? json_decode($row['features'], true) : [];
                 <?php endif; ?>
             </div>
         </div>
-        <a href="index.php" class="btn btn-secondary">Geri Dön</a>
+        <a href="index.php" class="block text-center text-blue-500 hover:underline">Geri Dön</a>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrap.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

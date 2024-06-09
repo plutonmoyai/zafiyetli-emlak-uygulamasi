@@ -1,7 +1,5 @@
-<?php
 include 'auth.php';
 include 'db.php';
-include 'log_fonksiyonu.php';
 checkRole(['admin', 'editor']);
 
 // Hata ayıklama modunu aktif et
@@ -18,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $city = $_POST['city'];
     $district = $_POST['district'];
     $user_id = $_SESSION['user_id'];
+    $username = $_SESSION['username'];
 
     $image_path = '';
     if (!empty($_FILES['image']['name'])) {
@@ -57,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $current_username = $_SESSION['username'];
         $action = "İLAN OLUŞTURULDU";
         $details = "$current_username adlı kullanıcı '$title' ilanını oluşturdu.";
-        addLog($current_user_id, $action, $details);
+        logAction($current_user_id, $action, $details);
 
         echo "Yeni ilan başarıyla eklendi.";
     } else {
@@ -73,12 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>İlan Ekle</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center">İlan Ekle</h2>
-        <a href="admin.php" class="btn btn-secondary">Geri Dön</a>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="max-w-md mx-auto bg-white p-8 border border-gray-300 shadow-lg rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">İlan Ekle</h2>
+            <a href="admin.php" class="text-blue-500 hover:underline">Geri Dön</a>
+        </div>
     </div>
 </body>
 </html>

@@ -54,54 +54,52 @@ if (isset($_SESSION['error'])) {
 <head>
     <meta charset="UTF-8">
     <title>Kayıt Ol</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center">Kayıt Ol</h2>
-        <?php if (!empty($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-        <form method="post">
-            <div class="form-group">
-                <label for="username">Kullanıcı Adı:</label>
-                <input type="text" name="username" class="form-control" required>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="max-w-md mx-auto bg-white p-8 border border-gray-300 shadow-lg rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Kayıt Ol</h2>
+            <?php if (!empty($error)) echo "<div class='bg-red-100 text-red-700 p-4 mb-4 rounded'>$error</div>"; ?>
+            <form method="post">
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700">Kullanıcı Adı:</label>
+                    <input type="text" name="username" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700">E-posta:</label>
+                    <input type="email" name="email" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="firstname" class="block text-gray-700">Ad:</label>
+                    <input type="text" name="firstname" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="lastname" class="block text-gray-700">Soyad:</label>
+                    <input type="text" name="lastname" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="twitter" class="block text-gray-700">Twitter:</label>
+                    <input type="text" name="twitter" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="mb-4">
+                    <label for="instagram" class="block text-gray-700">Instagram:</label>
+                    <input type="text" name="instagram" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-gray-700">Şifre:</label>
+                    <input type="password" name="password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="confirm_password" class="block text-gray-700">Şifre Tekrar:</label>
+                    <input type="password" name="confirm_password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Kayıt Ol</button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="giris.php" class="text-blue-500 hover:underline">Hesabınız var mı? Giriş Yapın!</a>
             </div>
-            <div class="form-group">
-                <label for="email">E-posta:</label>
-                <input type="email" name="email" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="firstname">Ad:</label>
-                <input type="text" name="firstname" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="lastname">Soyad:</label>
-                <input type="text" name="lastname" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="twitter">Twitter:</label>
-                <input type="text" name="twitter" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="instagram">Instagram:</label>
-                <input type="text" name="instagram" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="password">Şifre:</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm_password">Şifre Tekrar:</label>
-                <input type="password" name="confirm_password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Kayıt Ol</button>
-        </form>
-        <div class="text-center mt-3">
-            <a href="giris.php">Hesabınız var mı? Giriş Yapın!</a>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $target_username = $user_data['username'];
         $action = "ROL DÜZENLENDİ";
         $details = "$current_username rolündeki kullanıcı, $target_username adlı kullanıcının rolünü $role olarak düzenledi.";
-        addLog($current_user_id, $action, $details);
+        logAction($current_user_id, $action, $details);
         
         // Eğer kendi rolünü değiştirdiysen, oturum rolünü de güncelle
         if ($user_id == $_SESSION['user_id']) {
@@ -52,40 +52,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Kullanıcı Rolü Güncelle</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h2>Kullanıcı Rolü Güncelle</h2>
-        <?php if (!empty($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-        <?php if (!empty($success)) echo "<div class='alert alert-success'>$success</div>"; ?>
-        <form method="POST">
-            <div class="form-group">
-                <label for="user_id">Kullanıcı:</label>
-                <select class="form-control" id="user_id" name="user_id" required>
-                    <?php
-                    $sql = "SELECT id, username, role FROM users";
-                    $result = $conn->query($sql);
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="max-w-md mx-auto bg-white p-8 border border-gray-300 shadow-lg rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Kullanıcı Rolü Güncelle</h2>
+            <?php if (!empty($error)) echo "<div class='bg-red-100 text-red-700 p-4 mb-4 rounded'>$error</div>"; ?>
+            <?php if (!empty($success)) echo "<div class='bg-green-100 text-green-700 p-4 mb-4 rounded'>$success</div>"; ?>
+            <form method="POST">
+                <div class="mb-4">
+                    <label for="user_id" class="block text-gray-700">Kullanıcı:</label>
+                    <select class="w-full p-2 border border-gray-300 rounded mt-1" id="user_id" name="user_id" required>
+                        <?php
+                        $sql = "SELECT id, username, role FROM users";
+                        $result = $conn->query($sql);
 
-                    if ($result->num_rows > 0) {
-                        while($row = $result->fetch_assoc()) {
-                            echo "<option value='" . $row['id'] . "'>" . $row['username'] . " (Şu anki rolü: " . $row['role'] . ")</option>";
+                        if ($result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row['id'] . "'>" . $row['username'] . " (Şu anki rolü: " . $row['role'] . ")</option>";
+                            }
                         }
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="role">Yeni Rol:</label>
-                <select class="form-control" id="role" name="role" required>
-                    <option value="admin">Admin</option>
-                    <option value="editor">Editor</option>
-                    <option value="subscriber">Subscriber</option>
-                    <option value="user">User</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Rol Güncelle</button>
-        </form>
+                        ?>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="role" class="block text-gray-700">Yeni Rol:</label>
+                    <select class="w-full p-2 border border-gray-300 rounded mt-1" id="role" name="role" required>
+                        <option value="admin">Admin</option>
+                        <option value="editor">Editor</option>
+                        <option value="subscriber">Subscriber</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Rol Güncelle</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

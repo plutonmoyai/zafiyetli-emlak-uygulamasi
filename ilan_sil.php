@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
         $current_username = $_SESSION['username'];
         $action = "İLAN SİLİNDİ";
         $details = "$current_username adlı kullanıcı '$title' ilanını sildi.";
-        addLog($current_user_id, $action, $details);
+        logAction($current_user_id, $action, $details);
 
         echo "İlan başarıyla silindi.";
     } else {
@@ -47,12 +47,14 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <title>İlan Sil</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center">İlan Sil</h2>
-        <a href="admin.php" class="btn btn-secondary">Geri Dön</a>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="max-w-lg mx-auto bg-white p-8 border border-gray-300 shadow-lg rounded-lg text-center">
+            <h2 class="text-2xl font-bold mb-4">İlan Sil</h2>
+            <a href="admin.php" class="inline-block bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Geri Dön</a>
+        </div>
     </div>
 </body>
 </html>

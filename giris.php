@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Şifre doğrulamasını düz metin olarak yapıyoruz
         if ($user && $password === $user['password']) {
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
             if ($role) {
                 $_SESSION['role'] = $role;
             } else {
@@ -64,33 +65,31 @@ if (isset($_SESSION['error'])) {
 <head>
     <meta charset="UTF-8">
     <title>Giriş Yap</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center">Giriş Yap</h2>
-        <?php if (!empty($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-        <form method="post">
-            <div class="form-group">
-                <label for="username">Kullanıcı Adı:</label>
-                <input type="text" name="username" class="form-control" required>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="max-w-md mx-auto bg-white p-8 border border-gray-300 shadow-lg rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Giriş Yap</h2>
+            <?php if (!empty($error)) echo "<div class='bg-red-100 text-red-700 p-4 mb-4 rounded'>$error</div>"; ?>
+            <form method="post">
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700">Kullanıcı Adı:</label>
+                    <input type="text" name="username" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-gray-700">Şifre:</label>
+                    <input type="password" name="password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                </div>
+                <div class="mb-4" hidden>
+                    <input type="hidden" name="role" class="form-control" value="" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Giriş Yap</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="kayit.php" class="text-blue-500 hover:underline">Hesabınız yok mu? Kayıt Olun!</a>
             </div>
-            <div class="form-group">
-                <label for="password">Şifre:</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-            <div class="form-group" hidden>
-                <input type="hidden" name="role" class="form-control" value="" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Giriş Yap</button>
-        </form>
-        <div class="text-center mt-3">
-            <a href="kayit.php">Hesabınız yok mu? Kayıt Olun!</a>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
