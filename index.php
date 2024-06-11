@@ -17,6 +17,22 @@ function redirectIfNotLoggedIn() {
     <meta charset="UTF-8">
     <title>Ana Sayfa</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#search').on('keyup', function() {
+                var query = $(this).val();
+                $.ajax({
+                    url: 'search.php',
+                    type: 'GET',
+                    data: { search: query },
+                    success: function(data) {
+                        $('#ilanlar').html(data);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto mt-10">
@@ -40,8 +56,10 @@ function redirectIfNotLoggedIn() {
             </div>
         <?php endif; ?>
 
+        <input type="text" id="search" class="w-full p-2 border border-gray-300 rounded mt-1 mb-4" placeholder="Aramak için yazın...">
+
         <h3 class="my-4 text-xl font-semibold">Eklenen İlanlar</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div id="ilanlar" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <?php
             $sql = "SELECT * FROM properties";
             $result = $conn->query($sql);

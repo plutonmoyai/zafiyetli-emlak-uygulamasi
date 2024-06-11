@@ -8,6 +8,8 @@ checkRole(['admin', 'editor']);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+$response = ["status" => "error", "message" => "Geçersiz istek!"];
+
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
@@ -31,30 +33,16 @@ if (isset($_GET['id'])) {
         $details = "$current_username adlı kullanıcı '$title' ilanını sildi.";
         logAction($current_user_id, $action, $details);
 
-        echo "İlan başarıyla silindi.";
+        $response = ["status" => "success", "message" => "İlan başarıyla silindi."];
     } else {
-        echo "Hata: " . $stmt->error;
+        $response["message"] = "Hata: " . $stmt->error;
     }
 
     $stmt->close();
     $conn->close();
-} else {
-    echo "Geçersiz istek!";
 }
+
+$_SESSION['response'] = $response;
+header('Location: admin.php?action=ilan_listele');
+exit();
 ?>
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>İlan Sil</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="container mx-auto mt-10">
-        <div class="max-w-lg mx-auto bg-white p-8 border border-gray-300 shadow-lg rounded-lg text-center">
-            <h2 class="text-2xl font-bold mb-4">İlan Sil</h2>
-            <a href="admin.php" class="inline-block bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Geri Dön</a>
-        </div>
-    </div>
-</body>
-</html>
