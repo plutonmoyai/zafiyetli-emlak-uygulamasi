@@ -21,13 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $confirm_password = $_POST['confirm_password'];
 
     if ($password != $confirm_password) {
-        $error = "Şifreler uyuşmuyor!";
+        $error = "Parolalar uyuşmuyor!";
     } else {
         $role = 'user';
 
-        // Şifreyi düz metin olarak kaydediyoruz
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
         $stmt = $conn->prepare("INSERT INTO users (username, email, password, role, firstname, lastname, twitter, instagram) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $username, $email, $password, $role, $firstname, $lastname, $twitter, $instagram);
+        $stmt->bind_param("ssssssss", $username, $email, $hashed_password, $role, $firstname, $lastname, $twitter, $instagram);
 
         if ($stmt->execute()) {
             header("Location: giris.php");
@@ -87,11 +88,11 @@ if (isset($_SESSION['error'])) {
                     <input type="text" name="instagram" class="w-full p-2 border border-gray-300 rounded mt-1">
                 </div>
                 <div class="mb-4">
-                    <label for="password" class="block text-gray-700">Şifre:</label>
+                    <label for="password" class="block text-gray-700">Parola:</label>
                     <input type="password" name="password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
                 </div>
                 <div class="mb-4">
-                    <label for="confirm_password" class="block text-gray-700">Şifre Tekrar:</label>
+                    <label for="confirm_password" class="block text-gray-700">Parola Tekrar:</label>
                     <input type="password" name="confirm_password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
                 </div>
                 <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Kayıt Ol</button>

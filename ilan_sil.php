@@ -8,8 +8,6 @@ checkRole(['admin', 'editor']);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$response = ["status" => "error", "message" => "Geçersiz istek!"];
-
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
@@ -22,9 +20,16 @@ if (isset($_GET['id'])) {
     $title = $row['title'];
     $stmt->close();
 
-    // İlanı sil
+    // property_features tablosundan ilişkili kayıtları sil
+    $stmt = $conn->prepare("DELETE FROM property_features WHERE property_id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    // properties tablosundan ilanı sil
     $stmt = $conn->prepare("DELETE FROM properties WHERE id = ?");
     $stmt->bind_param("i", $id);
+    
     if ($stmt->execute()) {
         // Log ekle
         $current_user_id = $_SESSION['user_id'];
@@ -33,16 +38,21 @@ if (isset($_GET['id'])) {
         $details = "$current_username adlı kullanıcı '$title' ilanını sildi.";
         logAction($current_user_id, $action, $details);
 
-        $response = ["status" => "success", "message" => "İlan başarıyla silindi."];
+        $_SESSION['response'] = array(
+            'message' => 'İlan başarıyla silindi.',
+            'type' => 'success'
+        );
     } else {
-        $response["message"] = "Hata: " . $stmt->error;
+        $_SESSION['response'] = array(
+            'message' => 'İlan silinirken bir hata oluştu: ' . $stmt->error,
+            'type' => 'error'
+        );
     }
-
+    
     $stmt->close();
     $conn->close();
 }
 
-$_SESSION['response'] = $response;
-header('Location: admin.php?action=ilan_listele');
+header("Location: admin.php?action=ilan_listele");
 exit();
 ?>

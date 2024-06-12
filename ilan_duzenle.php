@@ -42,12 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rooms = $_POST['rooms'];
         $floors = $_POST['floors'];
         $building_age = $_POST['building_age'];
-        $stmt = $conn->prepare("UPDATE properties SET type=?, title=?, description=?, price=?, area=?, rooms=?, floors=?, building_age=?, address=?, city=?, district=?, image_path=? WHERE id=?");
+
+        $stmt = $conn->prepare("UPDATE properties SET type = ?, title = ?, description = ?, price = ?, area = ?, rooms = ?, floors = ?, building_age = ?, address = ?, city = ?, district = ?, image_path = ? WHERE id = ?");
         $stmt->bind_param("sssdidsissssi", $type, $title, $description, $price, $area, $rooms, $floors, $building_age, $address, $city, $district, $image_path, $id);
     } elseif ($type == 'arsa') {
         $zoning_status = $_POST['zoning_status'];
         $land_type = $_POST['land_type'];
-        $stmt = $conn->prepare("UPDATE properties SET type=?, title=?, description=?, price=?, area=?, zoning_status=?, land_type=?, address=?, city=?, district=?, image_path=? WHERE id=?");
+
+        $stmt = $conn->prepare("UPDATE properties SET type = ?, title = ?, description = ?, price = ?, area = ?, zoning_status = ?, land_type = ?, address = ?, city = ?, district = ?, image_path = ? WHERE id = ?");
         $stmt->bind_param("sssdissssssi", $type, $title, $description, $price, $area, $zoning_status, $land_type, $address, $city, $district, $image_path, $id);
     } else {
         echo "Geçersiz ilan türü!";
@@ -58,22 +60,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Log ekle
         $current_user_id = $_SESSION['user_id'];
         $current_username = $_SESSION['username'];
-        $action = "İLAN DÜZENLENDİ";
-        $details = "$current_username adlı kullanıcı '$title' ilanını düzenledi.";
+        $action = "İLAN GÜNCELLENDİ";
+        $details = "$current_username adlı kullanıcı '$title' ilanını güncelledi.";
         logAction($current_user_id, $action, $details);
 
-        echo "İlan başarıyla güncellendi.";
+        $_SESSION['response'] = array(
+            'message' => 'İlan başarıyla güncellendi.',
+            'type' => 'success'
+        );
+        header("Location: admin.php?action=ilan_listele");
+        exit();
     } else {
         echo "Hata: " . $stmt->error;
     }
 
     $stmt->close();
     $conn->close();
-    header("Location: admin.php?action=ilan_listele");
-    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -90,11 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-4">
                     <label for="type" class="block text-gray-700">İlan Tipi:</label>
                     <select class="w-full p-2 border border-gray-300 rounded mt-1" id="type" name="type" required>
-                        <option value="konut" <?php echo $property['type'] == 'konut' ? 'selected' : ''; ?>>Konut</option>
-                        <option value="arsa" <?php echo $property['type'] == 'arsa' ? 'selected' : ''; ?>>Arsa</option>
+                        <option value="konut" <?php if ($property['type'] == 'konut') echo 'selected'; ?>>Konut</option>
+                        <option value="arsa" <?php if ($property['type'] == 'arsa') echo 'selected'; ?>>Arsa</option>
                     </select>
                 </div>
-                <div id="konutFields" style="display: <?php echo $property['type'] == 'konut' ? 'block' : 'none'; ?>;">
+                <div id="konutFields" style="<?php if ($property['type'] != 'konut') echo 'display: none;'; ?>">
                     <div class="mb-4">
                         <label for="rooms" class="block text-gray-700">Oda Sayısı:</label>
                         <input type="number" class="w-full p-2 border border-gray-300 rounded mt-1" id="rooms" name="rooms" value="<?php echo $property['rooms']; ?>">
@@ -108,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="number" class="w-full p-2 border border-gray-300 rounded mt-1" id="building_age" name="building_age" value="<?php echo $property['building_age']; ?>">
                     </div>
                 </div>
-                <div id="arsaFields" style="display: <?php echo $property['type'] == 'arsa' ? 'block' : 'none'; ?>;">
+                <div id="arsaFields" style="<?php if ($property['type'] != 'arsa') echo 'display: none;'; ?>">
                     <div class="mb-4">
                         <label for="zoning_status" class="block text-gray-700">İmar Durumu:</label>
                         <input type="text" class="w-full p-2 border border-gray-300 rounded mt-1" id="zoning_status" name="zoning_status" value="<?php echo $property['zoning_status']; ?>">
@@ -128,11 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <div class="mb-4">
                     <label for="price" class="block text-gray-700">Fiyat:</label>
-                    <input type="number" class="w-full p-2 border border-gray-300 rounded mt-1" id="price" name="price" step="0.01" value="<?php echo $property['price']; ?>">
+                    <input type="number" class="w-full p-2 border border-gray-300 rounded mt-1" id="price" name="price" value="<?php echo $property['price']; ?>" step="0.01">
                 </div>
                 <div class="mb-4">
                     <label for="area" class="block text-gray-700">Alan (m²):</label>
-                    <input type="number" class="w-full p-2 border border-gray-300 rounded mt-1" id="area" name="area" step="0.01" value="<?php echo $property['area']; ?>">
+                    <input type="number" class="w-full p-2 border border-gray-300 rounded mt-1" id="area" name="area" value="<?php echo $property['area']; ?>" step="0.01">
                 </div>
                 <div class="mb-4">
                     <label for="address" class="block text-gray-700">Adres:</label>
@@ -149,8 +153,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-4">
                     <label for="image" class="block text-gray-700">Resim:</label>
                     <input type="file" class="w-full p-2 border border-gray-300 rounded mt-1" id="image" name="image">
+                    <?php if (!empty($property['image_path'])): ?>
+                        <img src="<?php echo $property['image_path']; ?>" class="w-full h-48 object-cover rounded mt-2" alt="İlan Resmi">
+                    <?php endif; ?>
                 </div>
-                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">İlanı Güncelle</button>
+                <div class="mb-4">
+                    <label class="block text-gray-700">Özellikler:</label>
+                    <div class="flex items-center">
+                        <?php
+                        $features = [];
+                        $feature_stmt = $conn->prepare("SELECT feature FROM property_features WHERE property_id = ?");
+                        $feature_stmt->bind_param("i", $property['id']);
+                        $feature_stmt->execute();
+                        $feature_result = $feature_stmt->get_result();
+                        while ($feature_row = $feature_result->fetch_assoc()) {
+                            $features[] = $feature_row['feature'];
+                        }
+                        $feature_stmt->close();
+                        ?>
+                        <label class="mr-2">
+                            <input type="checkbox" name="features[]" value="ADSL" class="mr-1" <?php if (in_array('ADSL', $features)) echo 'checked'; ?>> ADSL
+                        </label>
+                        <label class="mr-2">
+                            <input type="checkbox" name="features[]" value="Ahşap Doğrama" class="mr-1" <?php if (in_array('Ahşap Doğrama', $features)) echo 'checked'; ?>> Ahşap Doğrama
+                        </label>
+                        <label class="mr-2">
+                            <input type="checkbox" name="features[]" value="Araç Şarj İstasyonu" class="mr-1" <?php if (in_array('Araç Şarj İstasyonu', $features)) echo 'checked'; ?>> Araç Şarj İstasyonu
+                        </label>
+                        <label class="mr-2">
+                            <input type="checkbox" name="features[]" value="24 Saat Güvenlik" class="mr-1" <?php if (in_array('24 Saat Güvenlik', $features)) echo 'checked'; ?>> 24 Saat Güvenlik
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Güncelle</button>
             </form>
         </div>
     </div>

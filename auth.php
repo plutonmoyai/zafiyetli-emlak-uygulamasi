@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 if (!function_exists('checkRole')) {
     function checkRole($roles) {
         if (!in_array($_SESSION['role'], $roles)) {
-            echo "Bu role erişim izni yok.";
+            echo "Bu sayfaya erişim izni yok.";
             exit();
         }
     }

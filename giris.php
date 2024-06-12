@@ -15,9 +15,7 @@ if (isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    if ($_POST['role'] != ''){
-        $role = $_POST['role'];
-    }
+    $role = isset($_POST['role']) ? $_POST['role'] : '';
 
     try {
         $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
@@ -29,26 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
 
-        // Şifre doğrulamasını düz metin olarak yapıyoruz
-        if ($user && $password === $user['password']) {
+        if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-            if ($role) {
-                $_SESSION['role'] = $role;
-            } else {
-                $_SESSION['role'] = $user['role'];
-            }
+            $_SESSION['role'] = $role != '' ? $role : $user['role'];
             
             header("Location: index.php");
             exit();
         } else {
-            $error = "Geçersiz kullanıcı adı veya şifre!";
+            $error = "Geçersiz kullanıcı adı veya parola!";
         }
     } catch (Exception $e) {
         $error = "Bir hata oluştu: " . $e->getMessage();
     }
 
-    // Hata mesajını session'a kaydedin ve sayfayı yeniden yükleyin
     $_SESSION['error'] = $error;
     header("Location: giris.php");
     exit();
@@ -66,6 +58,23 @@ if (isset($_SESSION['error'])) {
     <meta charset="UTF-8">
     <title>Giriş Yap</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#username').on('blur', function() { // Kullanıcı adı alanından çıkıldığında çalışır
+                var username = $(this).val();
+                $.ajax({
+                    url: 'get_role.php',
+                    type: 'GET',
+                    data: { username: username },
+                    success: function(data) {
+                        var response = JSON.parse(data);
+                        $('#role').val(response.role);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto mt-10">
@@ -75,14 +84,14 @@ if (isset($_SESSION['error'])) {
             <form method="post">
                 <div class="mb-4">
                     <label for="username" class="block text-gray-700">Kullanıcı Adı:</label>
-                    <input type="text" name="username" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+                    <input type="text" id="username" name="username" class="w-full p-2 border border-gray-300 rounded mt-1" required>
                 </div>
                 <div class="mb-4">
-                    <label for="password" class="block text-gray-700">Şifre:</label>
+                    <label for="password" class="block text-gray-700">Parola:</label>
                     <input type="password" name="password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
                 </div>
                 <div class="mb-4" hidden>
-                    <input type="hidden" name="role" class="form-control" value="" required>
+                    <input type="hidden" id="role" name="role" class="form-control" value="" required>
                 </div>
                 <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Giriş Yap</button>
             </form>

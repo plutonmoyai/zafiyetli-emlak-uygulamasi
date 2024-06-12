@@ -17,8 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $address = $_POST['address'];
     $city = $_POST['city'];
     $district = $_POST['district'];
-    $user_id = $_SESSION['user_id'];
-    $username = $_SESSION['username'];
+    $user_id = $_SESSION['user_id'];  // Giriş yapan kullanıcının ID'sini al
 
     $image_path = '';
     if (!empty($_FILES['image']['name'])) {
@@ -42,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $land_type = $_POST['land_type'];
 
         $stmt = $conn->prepare("INSERT INTO properties (type, title, description, price, area, zoning_status, land_type, address, city, district, image_path, user_id) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssdissssssi", $type, $title, $description, $price, $area, $zoning_status, $land_type, $address, $city, $district, $image_path, $user_id);
     } else {
         echo "Geçersiz ilan türü!";
